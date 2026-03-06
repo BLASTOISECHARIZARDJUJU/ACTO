@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Actos Públicos 2026 (GCBA) - Agenda</title>
+
+  <style>
+    :root{
+      /* Paleta GCBA / Obelisco */
+      --g-900:#38485C;
+      --g-100:#D1D8E0;
+      --g-50:#E6EBF0;
+      --g-10:#F3F6F9;
+      --yellow:#FFDB2E;
+      --warning:#FFA82E;
+      --danger:#C93B3B;
+
+      /* Tema claro */
+      --bg:#FFFFFF;
+      --surface:var(--g-10);
+      --surface-2:var(--g-50);
+      --text:#0F172A;
+      --muted:#334155;
+      --border:var(--g-100);
+      --shadow: rgba(0,0,0,.14);
+
+      --btn-bg: var(--g-900);
+      --btn-text: #FFFFFF;
+      --btn-border: var(--g-900);
+
+      --glow: rgba(255, 219, 46, .55); /* halo amarillo */
+    }
+
+    [data-theme="dark"]{
+      --bg:#0B1220;
+      --surface:#101A2B;
+      --surface-2:#0E1726;
+      --text:#EAF0F8;
+      --muted:#C7D2E1;
+      --border:#223047;
+      --shadow: rgba(0,0,0,.45);
+
+      --btn-bg: var(--yellow);
+      --btn-text: #111827;
+      --btn-border: var(--yellow);
+
+      --glow: rgba(255, 219, 46, .45);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      font-family: system-ui, Arial;
+      margin: 20px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    h1{ margin: 0 0 6px; }
+    .muted{ color: var(--muted); opacity:.9; }
+
+    .topbar{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom: 10px;
+    }
+
+    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    .spacer{ flex:1; }
+
+    label{ display:block; font-size:12px; margin-bottom:6px; color: var(--muted); }
+
+    input, select, button{
+      padding:10px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+    }
+    button{
+      cursor:pointer;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border-color: var(--btn-border);
+      font-weight: 900;
+    }
+    button:active{ transform: translateY(1px); }
+
+    .btn-secondary{
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border);
+      font-weight: 900;
+    }
+    .btn-danger{
+      background: var(--danger);
+      border-color: var(--danger);
+      color:#fff;
+      font-weight: 950;
+    }
+    .btn-warning{
+      background: var(--warning);
+      border-color: var(--warning);
+      color:#111827;
+      font-weight: 950;
+    }
+
+    .pill{
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size: 12px;
+      color: var(--text);
+      user-select:none;
+      white-space: nowrap;
+    }
+
+    .card{
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px;
+      background: var(--surface-2);
+      box-shadow: 0 10px 30px var(--shadow);
+      margin-top:14px;
+    }
+
+    /* Tabs horizontales */
+    .tabsBar{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      overflow:auto;
+      padding-bottom: 6px;
+      scrollbar-width: thin;
+    }
+
+    .tabBtn{
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 950;
+      cursor:pointer;
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      white-space: nowrap;
+      position: relative;
+      transition: transform .08s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+    }
+    .tabBtn:hover{ filter: brightness(0.98); }
+
+    .tabBtn.active{
+      border-color: var(--btn-border);
+      background: color-mix(in srgb, var(--btn-bg) 14%, var(--surface));
+    }
+
+    /* Glow del día de HOY (aunque no sea el activo) */
+    .tabBtn.today{
+      border-color: color-mix(in srgb, var(--yellow) 55%, var(--border));
+      box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--yellow) 18%, transparent),
+        0 0 18px var(--glow);
+    }
+
+    /* Pulso suave para HOY (más visible, pero elegante) */
+    @keyframes glowPulse {
+      0%   { box-shadow: 0 0 0 3px color-mix(in srgb, var(--yellow) 14%, transparent), 0 0 14px color-mix(in srgb, var(--glow) 75%, transparent); }
+      50%  { box-shadow: 0 0 0 4px color-mix(in srgb, var(--yellow) 22%, transparent), 0 0 26px var(--glow); }
+      100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--yellow) 14%, transparent), 0 0 14px color-mix(in srgb, var(--glow) 75%, transparent); }
+    }
+    .tabBtn.todayPulse{
+      animation: glowPulse 1.6s ease-in-out infinite;
+    }
+
+    .badge{
+      font-size:12px;
+      border:1px solid var(--border);
+      background: var(--surface);
+      padding: 4px 10px;
+      border-radius: 999px;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .panel{ margin-top: 12px; }
+    .empty{ color: var(--muted); padding: 10px 0 0 0; }
+
+    .event{
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 12px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-top:10px;
+      position: relative;
+      transition: box-shadow .2s ease, border-color .2s ease, background .2s ease, transform .12s ease;
+    }
+
+    .time{
+      min-width: 78px;
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      text-align:center;
+    }
+
+    .meta{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width: 260px;
+    }
+    .name{ font-weight: 950; }
+    .sub{ color: var(--muted); font-size: 12px; }
+
+    .countdown{
+      margin-left:auto;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 110px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-variant-numeric: tabular-nums;
+      font-weight: 950;
+    }
+    .countdown.soon{
+      border-color: color-mix(in srgb, var(--warning) 55%, var(--border));
+      background: color-mix(in srgb, var(--warning) 14%, var(--surface));
+    }
+    .countdown.urgent{
+      border-color: color-mix(in srgb, var(--danger) 55%, var(--border));
+      background: color-mix(in srgb, var(--danger) 14%, var(--surface));
+    }
+
+    /* Resalte del PRÓXIMO ACTO (el más cercano) */
+    .event.nextUp{
+      border-color: color-mix(in srgb, var(--yellow) 65%, var(--border));
+      background: color-mix(in srgb, var(--yellow) 12%, var(--surface));
+      box-shadow:
+        0 0 0 4px color-mix(in srgb, var(--yellow) 14%, transparent),
+        0 0 28px var(--glow);
+      transform: translateY(-1px);
+    }
+
+    /* pulso para el próximo acto */
+    @keyframes nextPulse {
+      0%   { box-shadow: 0 0 0 4px color-mix(in srgb, var(--yellow) 12%, transparent), 0 0 18px color-mix(in srgb, var(--glow) 65%, transparent); }
+      50%  { box-shadow: 0 0 0 6px color-mix(in srgb, var(--yellow) 18%, transparent), 0 0 34px var(--glow); }
+      100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--yellow) 12%, transparent), 0 0 18px color-mix(in srgb, var(--glow) 65%, transparent); }
+    }
+    .event.nextUpPulse{
+      animation: nextPulse 1.4s ease-in-out infinite;
+    }
+
+    /* Chip "PRÓXIMO" */
+    .chip{
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: .2px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid color-mix(in srgb, var(--yellow) 60%, var(--border));
+      background: color-mix(in srgb, var(--yellow) 22%, var(--surface));
+      color: var(--text);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      white-space: nowrap;
+    }
+
+    /* Modal */
+    .overlay{
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.6);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index: 9999;
+      padding: 16px;
+    }
+    .modal{
+      width: min(560px, 94vw);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 16px 55px var(--shadow);
+    }
+    .modal h2{ margin: 0 0 8px; }
+    .modal p{ margin: 6px 0; }
+    .modal .actions{ display:flex; gap:10px; justify-content:flex-end; margin-top: 14px; flex-wrap: wrap; }
+    .big{ font-size: 18px; }
+
+    /* Vibración */
+    @keyframes shake{
+      0%{transform:translate(0,0)}
+      20%{transform:translate(-6px,0)}
+      40%{transform:translate(6px,0)}
+      60%{transform:translate(-6px,0)}
+      80%{transform:translate(6px,0)}
+      100%{transform:translate(0,0)}
+    }
+    .shake{ animation: shake .22s linear infinite; }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div>
+      <h1>Actos Públicos 2026</h1>
+      <div class="muted">Día de hoy con brillo + Próximo acto resaltado con pulso luminoso.</div>
+    </div>
+
+    <div class="row">
+      <button id="stopShakeBtn" class="btn-warning" style="display:none;">🛑 Detener vibración</button>
+      <span class="pill" id="shakeState">Vibración: OFF</span>
+
+      <button id="soundBtn" class="btn-secondary">🔊 Activar sonido</button>
+      <span class="pill" id="soundState">Sonido: OFF</span>
+
+      <button id="themeBtn" class="btn-secondary">🌙 Modo oscuro</button>
+      <span class="pill" id="themeState">Tema: Claro</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row" style="align-items:flex-end;">
+      <div>
+        <h3 style="margin:0 0 6px;">Cargar cronograma</h3>
+        <div class="muted">Carga automática (hora de inicio) + podés agregar eventos manuales.</div>
+      </div>
+      <div class="spacer"></div>
+      <button id="seedBtn">📅 Cargar cronograma Actos Públicos 2026</button>
+      <button id="clear" class="btn-danger">Borrar todo</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0 0 10px;">Agregar evento manual</h3>
+
+    <div class="row" style="align-items:end;">
+      <div>
+        <label>Nombre</label>
+        <input id="name" placeholder="Ej: PRIMARIA - Base TM TC" />
+      </div>
+
+      <div>
+        <label>Hora (24h)</label>
+        <input id="time" type="time" value="08:00" />
+      </div>
+
+      <div>
+        <label>Días</label>
+        <select id="days" multiple size="5" style="min-width:160px;">
+          <option value="1" selected>Lunes</option>
+          <option value="2" selected>Martes</option>
+          <option value="3" selected>Miércoles</option>
+          <option value="4" selected>Jueves</option>
+          <option value="5" selected>Viernes</option>
+        </select>
+      </div>
+
+      <button id="add">Agregar</button>
+      <div class="spacer"></div>
+      <span class="pill" id="nowLabel">—</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <h3 style="margin:0;">Semana</h3>
+        <div class="muted">Elegí un día para ver sus eventos.</div>
+      </div>
+    </div>
+
+    <div class="tabsBar" id="tabsBar" style="margin-top:12px;"></div>
+    <div class="panel" id="panel"></div>
+  </div>
+
+  <!-- Modal alerta -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h2>⏰ Evento en 10 minutos</h2>
+      <p class="big" id="alertText"></p>
+      <p class="muted" id="alertWhen"></p>
+      <div class="actions">
+        <button id="modalStopShake" class="btn-warning" style="display:none;">🛑 Detener vibración</button>
+        <button id="dismiss" class="btn-secondary">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const STORAGE_KEY = "actos_publicos_events_glow_v1";
+  const THEME_KEY   = "actos_publicos_theme_glow_v1";
+
+  const ALERT_MINUTES = 10;
+  const SHAKE_MINUTES = 3;
+
+  let soundEnabled = false;
+  let audioCtx = null;
+
+  const fired = new Set();
+  let shakeMutedUntil = 0;
+
+  const DAYS = [
+    { id: 1, short: "Lun", name: "Lunes" },
+    { id: 2, short: "Mar", name: "Martes" },
+    { id: 3, short: "Mié", name: "Miércoles" },
+    { id: 4, short: "Jue", name: "Jueves" },
+    { id: 5, short: "Vie", name: "Viernes" },
+  ];
+
+  let activeDay = null;
+
+  // Seed (misma base que veníamos usando)
+  const CRONOGRAMA_2026 = [
+    { name:"PRIMARIA - Base TM TC", time:"08:00", days:[1,2,3,4,5] },
+    { name:"PRIMARIA - Base Tarde", time:"12:00", days:[1,2,3,4,5] },
+    { name:"PRIMARIA - Maestro/a Especialista", time:"13:30", days:[1,2,3,4,5] },
+    { name:"PRIMARIA - Supervisor/a | Director/a", time:"11:00", days:[1] },
+    { name:"PRIMARIA - Vicedirector/a", time:"11:00", days:[3] },
+    { name:"PRIMARIA - MACTE", time:"10:30", days:[2,4] },
+    { name:"PRIMARIA - Secretario/a", time:"11:00", days:[5] },
+
+    { name:"INICIAL - Base JS TM", time:"09:30", days:[1,2,3,4,5] },
+    { name:"INICIAL - Base TT/JC", time:"13:00", days:[1,2,3,4,5] },
+    { name:"INICIAL - Maestro/a Especialista", time:"13:30", days:[1,2,3,4,5] },
+    { name:"INICIAL - Supervisor/a | Director/a", time:"11:00", days:[1] },
+    { name:"INICIAL - Vicedirector/a", time:"11:00", days:[3] },
+    { name:"INICIAL - Secretario/a", time:"11:00", days:[5] },
+
+    { name:"CURRICULAR - Supervisor/a | Director/a", time:"11:00", days:[1] },
+    { name:"CURRICULAR - Vicedirector/a", time:"11:00", days:[3] },
+    { name:"CURRICULAR - Secretario/a", time:"11:00", days:[5] },
+    { name:"CURRICULAR - Base", time:"10:00", days:[2,4] },
+
+    { name:"ESPECIAL - Supervisor/a | Director/a", time:"11:00", days:[1] },
+    { name:"ESPECIAL - Base", time:"10:00", days:[2,4] },
+    { name:"ESPECIAL - Vicedirector/a", time:"11:00", days:[3] },
+    { name:"ESPECIAL - Secretario/a", time:"11:00", days:[5] },
+
+    { name:"MEDIA | TÉCNICA | ARTÍSTICA - Base | Ascenso", time:"10:00", days:[2,4] },
+    { name:"MEDIA | TÉCNICA | ARTÍSTICA - Preceptor/a", time:"16:00", days:[2,4] },
+
+    { name:"NORMALES - Base Primaria/Inicial", time:"14:00", days:[1,2,3,4] },
+    { name:"NORMALES - Ascenso Primaria/Inicial", time:"14:00", days:[1,2,3,4] },
+    { name:"NORMALES - Base y Ascenso Media", time:"10:00", days:[5] },
+    { name:"NORMALES - Maestro/a Especialista", time:"13:30", days:[1,2,3,4,5] },
+    { name:"NORMALES - MACTE", time:"10:30", days:[2,4] },
+    { name:"NORMALES - Preceptor/a", time:"16:00", days:[5] },
+
+    { name:"SECUNDARIA ADULTOS - Ascenso", time:"10:00", days:[2] },
+    { name:"SECUNDARIA ADULTOS - Base", time:"10:00", days:[4] },
+    { name:"SECUNDARIA ADULTOS - Preceptor/a", time:"16:00", days:[4] },
+
+    { name:"PRIMARIA ADULTOS - Ascenso", time:"10:00", days:[2] },
+    { name:"PRIMARIA ADULTOS - Base", time:"10:00", days:[4] },
+
+    { name:"SERVICIOS PROFESIONALES - Base | Ascenso", time:"10:00", days:[4] },
+  ];
+
+  function loadEvents(){
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+    catch { return []; }
+  }
+  function saveEvents(events){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+  }
+  function uid(){
+    return Math.random().toString(16).slice(2) + Date.now().toString(16);
+  }
+  function selectedDays(){
+    const sel = [...document.getElementById("days").selectedOptions].map(o => Number(o.value));
+    return sel.filter(d => d>=1 && d<=5).sort((a,b)=>a-b);
+  }
+
+  function applyTheme(theme){
+    document.documentElement.setAttribute("data-theme", theme);
+    const isDark = theme === "dark";
+    document.getElementById("themeState").textContent = "Tema: " + (isDark ? "Oscuro" : "Claro");
+    document.getElementById("themeBtn").textContent = isDark ? "☀️ Modo claro" : "🌙 Modo oscuro";
+    localStorage.setItem(THEME_KEY, theme);
+  }
+  function initTheme(){
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === "dark" || saved === "light") return applyTheme(saved);
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    applyTheme(prefersDark ? "dark" : "light");
+  }
+
+  function beep(){
+    if (!soundEnabled) return;
+    try{
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.type = "sine";
+      o.frequency.value = 880;
+      g.gain.value = 0.08;
+      o.start();
+      setTimeout(() => o.stop(), 200);
+    }catch{}
+  }
+  function ensureAudioAllowed(){
+    try{
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      soundEnabled = true;
+      document.getElementById("soundState").textContent = "Sonido: ON";
+      document.getElementById("soundBtn").textContent = "🔊 Sonido activado";
+      beep();
+    }catch{
+      alert("Tu navegador no permite audio.");
+    }
+  }
+
+  function escapeHtml(str){
+    return String(str)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function formatMs(ms){
+    const total = Math.max(0, Math.floor(ms/1000));
+    const h = Math.floor(total/3600);
+    const m = Math.floor((total%3600)/60);
+    const s = total%60;
+    const pad = n => String(n).padStart(2,"0");
+    return h>0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
+  }
+
+  function nextOccurrence(ev, now = new Date()){
+    const [hh, mm] = ev.time.split(":").map(Number);
+    for (let add=0; add<=7; add++){
+      const d = new Date(now);
+      d.setSeconds(0,0);
+      d.setDate(now.getDate()+add);
+      d.setHours(hh, mm, 0, 0);
+      const wd = d.getDay();
+      if (ev.days.includes(wd)){
+        if (add===0 && d<=now) continue;
+        return d;
+      }
+    }
+    return null;
+  }
+
+  function weekdayNameES(dayIndex){
+    const map = {0:"Domingo",1:"Lunes",2:"Martes",3:"Miércoles",4:"Jueves",5:"Viernes",6:"Sábado"};
+    return map[dayIndex];
+  }
+
+  function showAlert(ev, whenDate){
+    document.getElementById("alertText").textContent = `${ev.name} (${ev.time})`;
+    document.getElementById("alertWhen").textContent = `Próximo: ${whenDate.toLocaleString()}`;
+    document.getElementById("overlay").style.display = "flex";
+    beep(); beep();
+  }
+
+  function setShakeUI(isShaking){
+    document.getElementById("shakeState").textContent = "Vibración: " + (isShaking ? "ON" : "OFF");
+    document.getElementById("stopShakeBtn").style.display = isShaking ? "inline-block" : "none";
+    document.getElementById("modalStopShake").style.display = isShaking ? "inline-block" : "none";
+  }
+
+  function stopShake(){
+    shakeMutedUntil = Date.now() + (10 * 60 * 1000);
+    document.body.classList.remove("shake");
+    setShakeUI(false);
+  }
+
+  function buildDayCounts(){
+    const events = loadEvents();
+    const counts = new Map();
+    for (const d of DAYS) counts.set(d.id, 0);
+    for (const ev of events){
+      for (const d of ev.days){
+        if (counts.has(d)) counts.set(d, counts.get(d) + 1);
+      }
+    }
+    return counts;
+  }
+
+  // render tabs con clase "today" y "todayPulse" para el día actual real
+  function renderTabs(){
+    const bar = document.getElementById("tabsBar");
+    bar.innerHTML = "";
+
+    const counts = buildDayCounts();
+    const today = new Date().getDay(); // 1..5 laboral
+
+    for (const d of DAYS){
+      const btn = document.createElement("button");
+      const isToday = (d.id === today);
+      const cls = ["tabBtn"];
+      if (activeDay === d.id) cls.push("active");
+      if (isToday) cls.push("today", "todayPulse");
+      btn.className = cls.join(" ");
+
+      const c = counts.get(d.id) || 0;
+      btn.innerHTML = `<span>${d.short}</span><span class="badge">${c}</span>`;
+
+      btn.onclick = () => {
+        activeDay = d.id;
+        renderTabs();
+        renderPanel();
+      };
+
+      bar.appendChild(btn);
+    }
+
+    const activeEl = bar.querySelector('.tabBtn.active');
+    if (activeEl) activeEl.scrollIntoView({inline:"center", block:"nearest"});
+  }
+
+  function renderPanel(){
+    const panel = document.getElementById("panel");
+    panel.innerHTML = "";
+
+    const dayObj = DAYS.find(x => x.id === activeDay);
+    if (!dayObj){
+      panel.innerHTML = `<div class="empty">Seleccioná un día.</div>`;
+      return;
+    }
+
+    const events = loadEvents();
+    const list = events.filter(ev => ev.days.includes(activeDay)).sort((a,b) => a.time.localeCompare(b.time));
+
+    const header = document.createElement("div");
+    header.className = "row";
+    header.style.marginTop = "8px";
+    header.innerHTML = `
+      <div class="pill"><strong>${dayObj.name}</strong></div>
+      <div class="spacer"></div>
+      <div class="muted">Mostrando solo ${dayObj.name}.</div>
+    `;
+    panel.appendChild(header);
+
+    if (list.length === 0){
+      const div = document.createElement("div");
+      div.className = "empty";
+      div.textContent = "No hay eventos para este día.";
+      panel.appendChild(div);
+      return;
+    }
+
+    for (const ev of list){
+      const item = document.createElement("div");
+      item.className = "event";
+      item.setAttribute("data-evt", ev.id);
+      item.innerHTML = `
+        <div class="time">${ev.time}</div>
+        <div class="meta">
+          <div class="name">${escapeHtml(ev.name)}</div>
+          <div class="sub">Alerta 10 min • Vibración 3 min</div>
+        </div>
+        <div class="countdown" data-countdown="${ev.id}">—</div>
+        <button class="btn-secondary" data-del="${ev.id}">Eliminar</button>
+      `;
+      panel.appendChild(item);
+    }
+
+    panel.querySelectorAll("[data-del]").forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute("data-del");
+        saveEvents(loadEvents().filter(x => x.id !== id));
+        renderTabs();
+        renderPanel();
+      };
+    });
+  }
+
+  // encuentra el “próximo acto” dentro del día activo (solo para resaltar el más cercano)
+  function findNextUpEventIdForActiveDay(now){
+    const events = loadEvents().filter(ev => ev.days.includes(activeDay));
+    let best = null; // {id, diff}
+    for (const ev of events){
+      const next = nextOccurrence(ev, now);
+      if (!next) continue;
+      const diff = next - now;
+      if (diff < 0) continue;
+      if (!best || diff < best.diff) best = { id: ev.id, diff };
+    }
+    return best ? best.id : null;
+  }
+
+  function tick(){
+    const events = loadEvents();
+    const now = new Date();
+
+    document.getElementById("nowLabel").textContent =
+      `Hoy: ${weekdayNameES(now.getDay())} • ${now.toLocaleTimeString()}`;
+
+    let anyUrgent = false;
+
+    // actualizar countdowns
+    for (const ev of events){
+      const next = nextOccurrence(ev, now);
+      if (!next) continue;
+
+      const diff = next - now;
+      const alertMs = ALERT_MINUTES * 60 * 1000;
+      const shakeMs = SHAKE_MINUTES * 60 * 1000;
+
+      document.querySelectorAll(`[data-countdown="${ev.id}"]`).forEach(el => {
+        el.textContent = formatMs(diff);
+        el.classList.remove("soon","urgent");
+        if (diff <= alertMs) el.classList.add("soon");
+        if (diff <= shakeMs) el.classList.add("urgent");
+      });
+
+      const key = `${ev.id}_${next.toDateString()}_${next.getHours()}:${next.getMinutes()}`;
+      if (diff <= alertMs && diff > (alertMs - 1000) && !fired.has(key)){
+        fired.add(key);
+        showAlert(ev, next);
+      }
+
+      if (diff <= shakeMs) anyUrgent = true;
+    }
+
+    // vibración global
+    const shakeAllowed = Date.now() >= shakeMutedUntil;
+    const shouldShake = anyUrgent && shakeAllowed;
+
+    if (shouldShake) document.body.classList.add("shake");
+    else document.body.classList.remove("shake");
+
+    setShakeUI(shouldShake);
+
+    // resaltar el próximo acto SOLO en el panel actual
+    document.querySelectorAll(".event.nextUp, .event.nextUpPulse").forEach(el => {
+      el.classList.remove("nextUp","nextUpPulse");
+      const chip = el.querySelector(".chip");
+      if (chip) chip.remove();
+    });
+
+    const nextId = findNextUpEventIdForActiveDay(now);
+    if (nextId){
+      const card = document.querySelector(`.event[data-evt="${nextId}"]`);
+      if (card){
+        card.classList.add("nextUp","nextUpPulse");
+
+        // agregar chip si no existe
+        const meta = card.querySelector(".meta");
+        if (meta && !meta.querySelector(".chip")){
+          const chip = document.createElement("div");
+          chip.className = "chip";
+          chip.textContent = "⭐ PRÓXIMO";
+          meta.appendChild(chip);
+        }
+      }
+    }
+
+    // actualizar tabs para que “HOY” siga brillando aunque cambie el día
+    renderTabs();
+  }
+
+  function seedCronograma(){
+    const existing = loadEvents();
+    if (existing.length > 0){
+      const ok = confirm("Ya tenés eventos cargados.\n\n¿Querés REEMPLAZARLOS por el cronograma 2026?");
+      if (!ok) return;
+    }
+
+    const seeded = CRONOGRAMA_2026.map(e => ({
+      id: uid(),
+      name: e.name,
+      time: e.time,
+      days: e.days.slice()
+    }));
+
+    saveEvents(seeded);
+
+    const today = new Date().getDay();
+    activeDay = (today >= 1 && today <= 5) ? today : 1;
+
+    renderTabs();
+    renderPanel();
+    tick();
+
+    alert("Listo ✅ Se cargó el cronograma Actos Públicos 2026.");
+  }
+
+  // UI
+  document.getElementById("seedBtn").onclick = seedCronograma;
+
+  document.getElementById("add").onclick = () => {
+    const name = document.getElementById("name").value.trim();
+    const time = document.getElementById("time").value;
+    const days = selectedDays();
+
+    if (!name) return alert("Poné un nombre al evento.");
+    if (!time) return alert("Elegí un horario.");
+    if (days.length === 0) return alert("Seleccioná al menos un día (Lun–Vie).");
+
+    const events = loadEvents();
+    events.push({ id: uid(), name, time, days });
+    saveEvents(events);
+
+    document.getElementById("name").value = "";
+    renderTabs();
+    renderPanel();
+  };
+
+  document.getElementById("clear").onclick = () => {
+    if (confirm("¿Seguro que querés borrar todos los eventos?")){
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    }
+  };
+
+  document.getElementById("dismiss").onclick = () => {
+    document.getElementById("overlay").style.display = "none";
+  };
+  document.getElementById("overlay").onclick = (e) => {
+    if (e.target.id === "overlay") document.getElementById("overlay").style.display = "none";
+  };
+
+  document.getElementById("soundBtn").onclick = () => ensureAudioAllowed();
+
+  document.getElementById("themeBtn").onclick = () => {
+    const current = document.documentElement.getAttribute("data-theme") || "light";
+    applyTheme(current === "dark" ? "light" : "dark");
+    // re-render para que el glow se adapte
+    renderTabs();
+  };
+
+  document.getElementById("stopShakeBtn").onclick = stopShake;
+  document.getElementById("modalStopShake").onclick = stopShake;
+
+  // Start
+  initTheme();
+
+  const today = new Date().getDay();
+  activeDay = (today >= 1 && today <= 5) ? today : 1;
+
+  renderTabs();
+  renderPanel();
+  tick();
+  setInterval(tick, 500);
+</script>
+</body>
+</html>
